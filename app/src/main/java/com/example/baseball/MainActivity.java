@@ -3,6 +3,7 @@ package com.example.baseball;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "초기화 됬습니다!", Toast.LENGTH_SHORT).show();
-                life.setText("남은기회 "+10+"번");
+
                 retry();
             }
 
@@ -75,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
        for(Object number: set){
-
            Integer temp= (Integer) number;
+
 
            int i=0;
            q[i]=temp;
@@ -89,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
         Scanner input= new Scanner(System.in);
         --count;
 
-        int strike =0 ;
-        int ball=0;
 
         life.setText("남은기회 "+count+"번");
 
@@ -105,7 +104,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         for(int i=0; i<3; ++i){
+
             for(int j=0; j<3; ++j){
+                int strike =0;
+                int ball=0;
                 if(q[i]==userInput[j]){
                     if(i==j){
                         ++strike;
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retry(){
+        life.setText("남은기회 "+10+"번");
+        ran.setText("");
         count=10;
 
 

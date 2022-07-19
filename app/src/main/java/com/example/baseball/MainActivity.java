@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Random;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,12 +20,15 @@ public class MainActivity extends AppCompatActivity {
 
     EditText answer;
     Button start, exit, correct;
-    TextView life, ran;
+    TextView life, ran,result;
 
     int q[]=new int[3];
     int userInput[]=new int[3];
 
     int count=10;
+    int strike =0;
+    int ball=0;
+    String list="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
         correct=findViewById(R.id.correct);
         life=findViewById(R.id.life_txt);
         ran=findViewById(R.id.ran_txt);
+        result=findViewById(R.id.resulttxt);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 randomNumber();
+                viewMode("start");
 
                 Toast.makeText(MainActivity.this, "게임시작!", Toast.LENGTH_SHORT).show();
             }
@@ -52,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "초기화 됬습니다!", Toast.LENGTH_SHORT).show();
 
+                viewMode("end");
                 retry();
             }
 
@@ -61,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 compare();
+                strike=0;
+                ball=0;
             }
         });
 
@@ -68,21 +78,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void randomNumber(){
 
-        HashSet set = new HashSet();
+        HashSet <Integer> set = new HashSet<>();
+
+        Random random= new Random();
+        int c=0;
 
         for(int i=0; i<3; ++i){
-            int ranNum=(int)(Math.random()*9)+1;
+            int ranNum=random.nextInt(9)+1;
             set.add(ranNum);
         }
 
-       for(Object number: set){
-           Integer temp= (Integer) number;
+        Iterator ite= set.iterator();
+
+        while(ite.hasNext()){
+
+            q[c]= (int) ite.next();
+            ++c;
+        }
 
 
-           int i=0;
-           q[i]=temp;
-           ++i;
-       }
+
+
     }
 
 
@@ -106,8 +122,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0; i<3; ++i){
 
             for(int j=0; j<3; ++j){
-                int strike =0;
-                int ball=0;
+
                 if(q[i]==userInput[j]){
                     if(i==j){
                         ++strike;
@@ -123,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
                 else if(count==0){
                     Toast.makeText(this, "기회 소진!", Toast.LENGTH_SHORT).show();
-                    ran.setText("정답은 "+q[0]+q[1]+q[2]);
+                    ran.setText("정답은 "+q[0]+" "+q[1]+" "+q[2]);
+                    viewMode("end");
                 }
                 else{
                     Toast.makeText(this, "오답!", Toast.LENGTH_SHORT).show();
@@ -131,15 +147,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        showResult(in);
     }
 
     public void retry(){
         life.setText("남은기회 "+10+"번");
         ran.setText("");
         count=10;
+        strike=0;
+        ball=0;
+        list="";
+        result.setText("");
 
+    }
 
+    public void showResult(String in){
+        list=in+" strike: "+strike+ "ball: "+ball;
+        result.append(list+"\n");
 
+    }
+
+    public void viewMode(String mode){
+        if(mode.equals("start")){
+            start.setEnabled(false);
+            exit.setEnabled(true);
+            correct.setEnabled(true);
+
+        }
+        else if(mode.equals("end")){
+            start.setEnabled(true);
+            exit.setEnabled(false);
+            correct.setEnabled(false);
+        }
 
     }
 
